@@ -23,6 +23,11 @@ const ProductSchema = new Schema({
   },
   tags: [tagSchema],
   images: [imgSchema],
+  username: {
+    type: mongoose.Schema.Types.ObjectId ,
+    ref: "UserModel",
+    required: true,
+  },
 });
 
 const ProductModel =
