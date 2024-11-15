@@ -1,12 +1,14 @@
 import dbConnect from "@/lib/dbConnect";
 import ProductModel from "@/model/Product";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 export async function POST(req) {
-  await dbConnect();
-  try {
+    try {
+      await dbConnect();
     const body = await req.json();
-    const { userId } = body;
-    if (!userId) {
+    console.log(body)
+    const { userId, productDetails } = body;
+    if (!userId || !productDetails) {
       return NextResponse.json(
         {
           success: false,
@@ -15,22 +17,18 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    const productsByUserId = await ProductModel.find({ user: userId });
-    console.log(productsByUserId);
-    if (productsByUserId.length===0) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User has not added any products.",
-        },
-        { status: 400 }
-      );
-    }
+    const newProduct= new ProductModel({
+        user:userId,
+        productName:productDetails.productName,
+        productDescription: productDetails.productDescription,
+        tags:productDetails.tags ||[],
+        images:productDetails.images||[]
+    })
+    await newProduct.save();
     return NextResponse.json(
       {
         success: true,
-        message: "Fetched products successfully.",
-        products: productsByUserId,
+        message: "Created product successfully.",
       },
       { status: 201 }
     );
@@ -39,7 +37,7 @@ export async function POST(req) {
     return NextResponse.json(
       {
         success: false,
-        message: "Problem fetching products.",
+        message: "Problem creating product.",
       },
       { status: 500 }
     );

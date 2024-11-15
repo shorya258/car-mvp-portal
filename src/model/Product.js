@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 const tagSchema = new Schema({
-  content: {
+  tagName: {
     type: String,
   },
 });
 const imgSchema = new Schema({
-  content: {
+  imgUrl: {
     type: String,
   },
 });
@@ -23,9 +23,10 @@ const ProductSchema = new Schema({
   },
   tags: [tagSchema],
   images: [imgSchema],
-  username: {
+  user: {
     type: mongoose.Schema.Types.ObjectId ,
     ref: "UserModel",
+    required: [true, "User id is required"],
     required: true,
   },
 });
