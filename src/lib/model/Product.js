@@ -3,9 +3,10 @@ const tagSchema = new Schema({
   content: {
     type: String,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+});
+const imgSchema = new Schema({
+  content: {
+    type: String,
   },
 });
 const ProductSchema = new Schema({
@@ -21,6 +22,7 @@ const ProductSchema = new Schema({
     trim: true,
   },
   tags: [tagSchema],
+  images: [imgSchema],
 });
 
 const ProductModel =
