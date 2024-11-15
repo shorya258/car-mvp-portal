@@ -71,8 +71,8 @@ export async function DELETE(req) {
   await dbConnect();
   try {
     const body = await req.json();
-    const { _id } = body;
-    if (!_id) {
+    const { productId } = body;
+    if (!productId) {
       return NextResponse.json(
         {
           success: false,
@@ -81,7 +81,7 @@ export async function DELETE(req) {
         { status: 400 }
       );
     }
-    const productToBeDeleted= await ProductModel.findById(_id);
+    const productToBeDeleted= await ProductModel.findById(productId);
     if(!productToBeDeleted) {
       return NextResponse.json(
         {
@@ -91,7 +91,7 @@ export async function DELETE(req) {
         { status: 400 }
       );
     }
-    await ProductModel.findByIdAndDelete(_id);
+    await ProductModel.findByIdAndDelete(productId);
     return NextResponse.json(
       {
         success: true,
