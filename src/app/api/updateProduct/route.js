@@ -34,6 +34,16 @@ export async function PUT(req) {
       );
     }
     const productId = productDetails._id;
+    const productToBeUpdated= await ProductModel.findById(productId);
+    if(!productToBeUpdated) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Product does not exist.",
+        },
+        { status: 400 }
+      );
+    }
     await ProductModel.findByIdAndUpdate(
       productId,
       { $set: productDetails },
@@ -42,7 +52,7 @@ export async function PUT(req) {
     return NextResponse.json(
       {
         success: true,
-        message: "Updated product successfully.",
+        message: "Product updated successfully.",
       },
       { status: 201 }
     );
@@ -51,7 +61,50 @@ export async function PUT(req) {
     return NextResponse.json(
       {
         success: false,
-        message: "Problem creating product.",
+        message: "Problem updating product.",
+      },
+      { status: 500 }
+    );
+  }
+}
+export async function DELETE(req) {
+  await dbConnect();
+  try {
+    const body = await req.json();
+    const { _id } = body;
+    if (!_id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Missing required field.",
+        },
+        { status: 400 }
+      );
+    }
+    const productToBeDeleted= await ProductModel.findById(_id);
+    if(!productToBeDeleted) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Product does not exist.",
+        },
+        { status: 400 }
+      );
+    }
+    await ProductModel.findByIdAndDelete(_id);
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Product deleted successfully.",
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Problem deleting product.",
       },
       { status: 500 }
     );
