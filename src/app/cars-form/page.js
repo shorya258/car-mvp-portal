@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import MultiImageUpload from "../Components/ImageUpload";
 import { jwtDecode } from "jwt-decode";
@@ -12,7 +12,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import firebaseApp from "../../../firebaseConfig";
-const carsForm = () => {
+const CarsForm = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
@@ -287,4 +287,10 @@ const carsForm = () => {
   );
 };
 
-export default carsForm;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CarsForm />
+    </Suspense>
+  );
+}

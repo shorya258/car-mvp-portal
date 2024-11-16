@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Carousel from "../Components/Carousel";
-const page = () => {
+const CarsDescription = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [productDetails, setProductDetails] = useState({
@@ -41,8 +41,8 @@ const page = () => {
         <div className=" flex-grow-1 text-center text-6xl text-white font-bold py-10 px-5">
           {productDetails.productName}
         </div>
-        <div className="flex-grow-1 p-2 md:p-5" >
-          <Carousel productImages = {productDetails.images} />
+        <div className="flex-grow-1 p-2 md:p-5">
+          <Carousel productImages={productDetails.images} />
         </div>
       </div>
       <div className="flex-grow-[2] bg-white flex flex-col px-4">
@@ -57,7 +57,14 @@ const page = () => {
         <div className="flex gap-5">
           {productDetails.tags.length !== 0 &&
             productDetails.tags.map((tag, key) => {
-              return <div key={key} className="bg-blue-950 text-white rounded-lg px-5 py-2 text-md hover:scale-105 transition-transform duration-300 ease-in-out" >{tag.tagName}</div>;
+              return (
+                <div
+                  key={key}
+                  className="bg-blue-950 text-white rounded-lg px-5 py-2 text-md hover:scale-105 transition-transform duration-300 ease-in-out"
+                >
+                  {tag.tagName}
+                </div>
+              );
             })}
         </div>
       </div>
@@ -65,4 +72,10 @@ const page = () => {
   );
 };
 
-export default page;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CarsDescription />
+    </Suspense>
+  );
+}
