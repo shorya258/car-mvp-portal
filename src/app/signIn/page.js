@@ -25,9 +25,6 @@ const signIn = () => {
     const json = await response.json();
     let authStorageToken = json.authToken;
     localStorage.setItem("authStorageToken", authStorageToken);
-    // console.log(json)
-    // console.log(response.status)
-    // const statusCode = response.status;
     if (response.status===201) {
       console.log(json.message);
       setTimeout(() => router.push("/dashboard"), 3000);
@@ -134,7 +131,7 @@ const signIn = () => {
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm md:text-lg  text-gray-500">
+          <span className="mt-10 text-center text-sm md:text-lg  text-gray-500">
             Not a member?
             <Link
               href={"/signUp"}
@@ -143,7 +140,7 @@ const signIn = () => {
             >
               Create a new account
             </Link>
-          </p>
+          </span>
         </div>
       </div>
     </div>
