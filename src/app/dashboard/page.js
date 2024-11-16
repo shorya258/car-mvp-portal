@@ -3,6 +3,8 @@ import Navbar from "../Components/Navbar";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../Components/ProductCard";
 import { jwtDecode } from "jwt-decode";
+import { faCarSide } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const dashboard = () => {
   const [fetchedProducts, setFetchedProducts] = useState([]);
@@ -43,13 +45,18 @@ const dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="bg-gray-300 min-h-[60%] h-auto flex justify-center items-center relative ">
-        <div className="p-8 bg-transparent min-h-full w-[90%] rounded-lg -top-20 grid grid-cols-4 gap-8">
-          {fetchedProducts?.map((singleProductData, key) => (
+      <div className="bg-gray-300 min-h-[60%] h-auto flex justify-center items-center ">
+        <div className={`p-8 bg-transparent min-h-full w-[90%] rounded-lg grid grid-cols-4 gap-8`}>
+          {fetchedProducts && fetchedProducts?.map((singleProductData, key) => (
             <ProductCard singleProductData={singleProductData} key={key} />
           ))}
         </div>
       </div>
+          {!fetchedProducts && <div className='text-gray-500  w-full '>
+            <FontAwesomeIcon icon={faCarSide} className="text-7xl" />
+            <span className="text-6xl font-extrabold tracking-wider" >SHOOT! YOU HAVE NOT ADDED ANY CARS YET!</span>
+          </div>
+            }
     </div>
   );
 };
