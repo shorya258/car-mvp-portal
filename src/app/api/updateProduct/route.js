@@ -5,7 +5,7 @@ export async function PUT(req) {
   await dbConnect();
   try {
     const body = await req.json();
-    const { productDetails } = body;
+    const { productDetails , newImages, retainedImages} = body;
     if (!productDetails || !productDetails._id) {
       return NextResponse.json(
         {
@@ -24,11 +24,11 @@ export async function PUT(req) {
         { status: 400 }
       );
     }
-    if (productDetails.images && !Array.isArray(productDetails.images)) {
+    if (!Array.isArray(newImages) || !Array.isArray(retainedImages)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Images must be an array",
+          message: "Please upload atleast one image",
         },
         { status: 400 }
       );
@@ -43,10 +43,22 @@ export async function PUT(req) {
         },
         { status: 400 }
       );
-    }
+    } 
+    const existingImages = productToBeUpdated.images;
+    console.log(existingImages , "existingImages")
+    console.log(retainedImages , "retainedImages")
+    const imagesToRemove = existingImages.filter(
+      (img) => !retainedImages.includes(img)
+    );
+    console.log(imagesToRemove , "imagesToRemove")
+    console.log(newImages, "newImages")
     await ProductModel.findByIdAndUpdate(
       productId,
       { $set: productDetails },
+      {
+        $pull: { images: { $in: imagesToRemove } }, // Remove deleted images
+        $addToSet: { images: { $each: newImages } }, // Add new images
+      },
       { runValidators: true, new: true }
     );
     return NextResponse.json(

@@ -17,7 +17,7 @@ const CarsForm = () => {
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
   const [productDetails, setProductDetails] = useState({
     productName: "",
     productDescription: "",
@@ -37,6 +37,7 @@ const CarsForm = () => {
     const json = await response.json();
     console.log("prod details", json);
     setProductDetails(json.singleProduct);
+    setExistingImages(json.singleProduct.images);
     if (response.status === 201) {
       console.log(json.message);
     } else {
@@ -64,7 +65,7 @@ const CarsForm = () => {
       console.log(json.message);
     }
   };
-  const updateSingleProduct = async () => {
+  const updateSingleProduct = async (uploadedImages) => {
     console.log("update api called", productDetails);
     const response = await fetch("api/updateProduct", {
       method: "PUT",
@@ -73,6 +74,8 @@ const CarsForm = () => {
       },
       body: JSON.stringify({
         productDetails,
+        retainedImages : existingImages,
+        newImages : uploadedImages
       }),
     });
     const json = await response.json();
@@ -85,12 +88,12 @@ const CarsForm = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const uploadedImages = await uploadImagesToFirebase();
     if (!productId) {
-      const uploadedImages = await uploadImagesToFirebase();
       createSingleProduct(uploadedImages);
       console.log("created");
     } else {
-      updateSingleProduct();
+      updateSingleProduct(uploadedImages);
       console.log("updated");
     }
     console.log("changes saved");
@@ -176,6 +179,11 @@ const CarsForm = () => {
     );
     })
   };
+  const handleRemoveExistingImage = (deletedId) => {
+    let updatedOldImageList = existingImages.filter(image => image._id !== deletedId)
+    setExistingImages(updatedOldImageList);
+  };
+
 
   return (
     <div className="flex flex-col p-5 items-center bg-gray-300">
@@ -266,7 +274,7 @@ const CarsForm = () => {
                   })}
                 </div>
               </div>
-              <MultiImageUpload handleSelectedImages = {handleSelectedImages}/>
+              <MultiImageUpload handleRemoveExistingImage={handleRemoveExistingImage} existingImages = {existingImages} handleSelectedImages = {handleSelectedImages}/>
             </div>
             <div className="flex justify-evenly p-3">
               <button

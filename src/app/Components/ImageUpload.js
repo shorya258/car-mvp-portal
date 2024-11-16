@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, IconButton } from "@mui/material";
 
 const MAX_IMAGES = 10;
 
 const MultiImageUpload = (props) => {
   const [images, setImages] = useState([]);
-  const [uploadedFileLinks, setUploadedFileLinks] = useState([]);
-
+  console.log(props, "props")
   // Handle image selection
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files);
@@ -64,6 +63,34 @@ const MultiImageUpload = (props) => {
             </Button>
           </label>
           <div className="flex flex-wrap rounded-md shadow-sm  max-w-lg mt-2 gap-6">
+            { props.existingImages?.map((img, index) => (
+              <div key={index} className="relative ">
+                <img
+                  src={img?.imgUrl}
+                  alt={`Preview ${index}`}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    objectFit: "cover",
+                    borderRadius: 4,
+                  }}
+                />
+                <IconButton
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    right: 5,
+                    backgroundColor: "red",
+                    color: "secondary",
+                    fontSize: 8,
+                  }}
+                  color="default"
+                  onClick={() => props.handleRemoveExistingImage(img._id)}
+                >
+                  ✖
+                </IconButton>
+              </div>
+            ))}
             {images.map((img, index) => (
               <div key={index} className="relative ">
                 <img
