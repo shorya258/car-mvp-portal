@@ -9,6 +9,7 @@ const carsForm = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
+  const [uploadedFileLinks, setUploadedFileLinks] = useState([]);
   const [productDetails, setProductDetails] = useState({
     productName: "",
     productDescription: "",
@@ -123,6 +124,12 @@ const carsForm = () => {
     }
   }, []);
 
+  const handleUploadedImages = (uploadedFileLinks) => {
+    console.log(uploadedFileLinks, "uploadedFileLinks");
+    
+    setUploadedFileLinks(uploadedFileLinks);
+  }
+
   return (
     <div className="flex flex-col p-5 items-center bg-gray-300">
       <form className="bg-white px-10 py-5 shadow-lg rounded-lg shadow-gray-600 min-w-[50%] ">
@@ -212,7 +219,7 @@ const carsForm = () => {
                   })}
                 </div>
               </div>
-              <MultiImageUpload />
+              <MultiImageUpload handleUploadedImages={handleUploadedImages}/>
             </div>
             <div className="flex justify-evenly p-3">
               <button
