@@ -28,7 +28,7 @@ const signUp = () => {
     console.log("sign up api",json)
     if (response.status===201) {
       console.log(json.message);
-      setTimeout(() => router.push("/login"), 3000);
+      setTimeout(() => router.push("/signIn"), 3000);
     } else {
       console.log(json.message);
     } 
