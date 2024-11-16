@@ -1,23 +1,21 @@
-
-"use client"
-import Image from 'next/image'
-import React, { useState } from 'react'
-import ConfirmationModal from './ConfirmationModal'
-
-const ProductCard = ({singleProductData}) => {
-  const{_id, productName, productDescription}=singleProductData;
+"use client";
+import Image from "next/image";
+import React, { useState } from "react";
+import ConfirmationModal from "./ConfirmationModal";
+import { useRouter } from "next/navigation";
+const ProductCard = ({ singleProductData }) => {
+  const router= useRouter();
+  const { _id, productName, productDescription } = singleProductData;
   const [openDeleteModal, toggleDeleteModal] = useState(false);
   const handleReject = () => {
-    toggleDeleteModal(false)
-  }
+    toggleDeleteModal(false);
+  };
   const handleApprove = () => {
-    toggleDeleteModal(false)
-  }
-  console.log(singleProductData)
-    const navigateToForm=()=>{
-      console.log(yo)
-      router.push(`cars-form-${_id}`);
-    }
+    toggleDeleteModal(false);
+  };
+  const navigateToForm = () => {
+    router.push(`/cars-form?requestId=${_id}`);
+  };
   return (
     <div className="mx-auto rounded overflow-hidden shadow-lg bg-white">
       <Image
@@ -34,25 +32,37 @@ const ProductCard = ({singleProductData}) => {
       <div className="px-6 pt-4 pb-2">
         {singleProductData.tags.map((tag, index) => {
           return (
-            <span key={index} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-default">
+            <span
+              key={index}
+              className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-default"
+            >
               #{tag.tagName}
             </span>
           );
         })}
       </div>
       <div className="flex justify-evenly p-3">
-        <button className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg  font-semibold leading-6 shadow-sm hover:bg-green-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out">
+        <button
+          className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg  font-semibold leading-6 shadow-sm hover:bg-green-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out"
+          onClick={navigateToForm}
+        >
           Edit
         </button>
-        <button className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg font-semibold leading-6 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out" 
-        onClick={() => toggleDeleteModal(true)}
+        <button
+          className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg font-semibold leading-6 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out"
+          onClick={() => toggleDeleteModal(true)}
         >
           Delete
         </button>
       </div>
-      {openDeleteModal && <ConfirmationModal handleApprove={handleApprove} handleReject={handleReject}/>}
+      {openDeleteModal && (
+        <ConfirmationModal
+          handleApprove={handleApprove}
+          handleReject={handleReject}
+        />
+      )}
     </div>
   );
-}
+};
 
-export default ProductCard
+export default ProductCard;
