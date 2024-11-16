@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Carousel from "../Components/Carousel";
 const page = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
@@ -36,11 +37,13 @@ const page = () => {
 
   return (
     <div className="min-h-screen flex flex-col mx-auto">
-      <div className="flex-grow-[2] bg-blue-950 ">
-        <div className="text-left text-6xl text-white font-bold py-10 px-5">
+      <div className="h-full flex flex-col flex-grow-[2] bg-blue-950 ">
+        <div className=" flex-grow-1 text-left text-6xl text-white font-bold py-10 px-5">
           {productDetails.productName}
         </div>
-        <div>{/* TODO: images */}</div>
+        <div className="flex-grow-1" >
+          <Carousel/>
+        </div>
       </div>
       <div className="flex-grow-[2] bg-white flex flex-col px-4">
         <div className="">
