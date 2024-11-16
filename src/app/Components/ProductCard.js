@@ -16,8 +16,12 @@ const ProductCard = ({ singleProductData }) => {
   const navigateToForm = () => {
     router.push(`/cars-form?requestId=${_id}`);
   };
+  const navigateToProductDescriptionPage=()=>{
+    router.push(`/car-description?requestId=${_id}`)
+    console.log("prod")
+  }
   return (
-    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white">
+    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white" onClick={navigateToProductDescriptionPage}>
       <Image
         className="w-full"
         src="/background.jpg"
