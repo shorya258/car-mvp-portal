@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import MultiImageUpload from "../Components/ImageUpload";
 import { jwtDecode } from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const carsForm = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
@@ -85,6 +87,27 @@ const carsForm = () => {
   const onChange = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
+  const [tagInput, setTagInput] = useState("");
+
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    setProductDetails((prevDetails) => ({
+      ...prevDetails,
+      tags: [...prevDetails.tags, { tagName: tagInput.trim() }],
+    }));
+    // console.log(productDetails);
+    setTagInput("");
+  };
+  const handleRemoveTag=(tagToRemove)=>{
+    console.log("")
+    let tempTags=productDetails.tags;
+    tempTags= tempTags.filter((tag)=>(tagToRemove!=tag))
+    setProductDetails((prevDetails) => ({
+      ...prevDetails,
+      tags: tempTags,
+    }));
+    console.log("tag removed", productDetails)
+  }
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
@@ -92,6 +115,7 @@ const carsForm = () => {
       if (authToken) {
         const storedData = jwtDecode(authToken);
         console.log("stored data", storedData);
+        setUserId(storedData.userId)
       }
     }
     if (productId) {
@@ -150,7 +174,6 @@ const carsForm = () => {
                     onChange={onChange}
                     rows={3}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-                    defaultValue={""}
                   />
                 </div>
                 <p className="mt-3 text-sm/6 text-gray-600">
@@ -159,12 +182,35 @@ const carsForm = () => {
               </div>
 
               <div className="sm:col-span-4">
-                {
-                  productDetails.tags.length!==0 &&
-                  productDetails.tags.map((singleTag,key)=>{
-                    return <div key={key}>{singleTag.tagName}</div>
-                  })
-                }
+                <label
+                  htmlFor="productName"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Tag Name
+                </label>
+                {productDetails.tags.length > 5 ? (
+                  <div>You can only enter 5 tags at max!</div>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Enter tag"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                    />
+                    <button onClick={handleAddTag}>Add Tag</button>
+                  </>
+                )}
+                <div className="flex gap-3" >
+
+                {productDetails.tags.length !== 0 &&
+                  productDetails.tags.map((singleTag, key) => {
+                    return <div key={key} className="rounded-md bg-indigo-600 text-white p-2" >
+                      {singleTag.tagName}
+                      <FontAwesomeIcon icon={faXmark} className="text-white" onClick={()=>(handleRemoveTag(singleTag.tagName))} />
+                      </div>;
+                  })}
+                </div>
               </div>
               <MultiImageUpload />
             </div>
