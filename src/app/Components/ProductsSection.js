@@ -29,19 +29,19 @@ const ProductsSection = () => {
       console.log(authToken);
       if (authToken) {
         const storedData = jwtDecode(authToken);
-        console.log("stored data",storedData);
+        console.log("stored data", storedData);
         fetchAllProductsByUserID(storedData.userId);
       }
     }
   }, []);
   return (
     <div className="p-8 bg-transparent min-h-full w-[90%] rounded-lg -top-20 grid grid-cols-4 gap-8">
-      {
-        fetchedProducts.length!==0 &&
-        fetchedProducts?.map((singleProductData, key)=>{
-          return(<ProductCard singleProductData={singleProductData} key={key}/>)
-        })
-      }
+      {fetchedProducts.length !== 0 &&
+        fetchedProducts?.map((singleProductData, key) => {
+          return (
+            <ProductCard singleProductData={singleProductData} key={key} />
+          );
+        })}
     </div>
   );
 };
