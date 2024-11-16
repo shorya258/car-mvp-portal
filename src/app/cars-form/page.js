@@ -2,16 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import MultiImageUpload from "../Components/ImageUpload";
+import { jwtDecode } from "jwt-decode";
 const carsForm = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
+  const [userId, setUserId] = useState("");
   const [productDetails, setProductDetails] = useState({
     productName: "",
     productDescription: "",
-    tags:[],
-    images:[]
+    tags: [],
+    images: [],
   });
-
   const fetchSingleProduct = async (productId) => {
     const response = await fetch("api/fetchSingleProduct", {
       method: "POST",
@@ -31,14 +32,68 @@ const carsForm = () => {
       console.log(json.message);
     }
   };
+  const createSingleProduct = async () => {
+    // console.log("user id", userId, "product details", productDetails)
+    const response = await fetch("api/createProduct", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        productDetails,
+      }),
+    });
+    const json = await response.json();
+    console.log("prod creation", json);
+    if (response.status === 201) {
+      console.log(json.message);
+    } else {
+      console.log(json.message);
+    }
+  };
+  const updateSingleProduct = async () => {
+    console.log("update api called", productDetails);
+    const response = await fetch("api/updateProduct", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        productDetails,
+      }),
+    });
+    const json = await response.json();
+    console.log("prod updation", json);
+    if (response.status === 201) {
+      console.log(json.message);
+    } else {
+      console.log(json.message);
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!productId) {
+      createSingleProduct();
+      console.log("created");
+    } else {
+      updateSingleProduct();
+      console.log("updated");
+    }
     console.log("changes saved");
   };
   const onChange = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const authToken = localStorage.getItem("authStorageToken");
+      console.log(authToken);
+      if (authToken) {
+        const storedData = jwtDecode(authToken);
+        console.log("stored data", storedData);
+      }
+    }
     if (productId) {
       fetchSingleProduct(productId);
     }
@@ -104,33 +159,18 @@ const carsForm = () => {
               </div>
 
               <div className="sm:col-span-4">
-                <label
-                  htmlFor="productName"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Tag Name
-                </label>
-                
-                <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                    <input
-                      id="productName"
-                      name="productName"
-                      type="text"
-                      placeholder="Model Name"
-                      autoComplete="productName"
-                      value={productDetails.productName}
-                      onChange={onChange}
-                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
-                    />
-                  </div>
-                </div>
+                {
+                  productDetails.tags.length!==0 &&
+                  productDetails.tags.map((singleTag,key)=>{
+                    return <div key={key}>{singleTag.tagName}</div>
+                  })
+                }
               </div>
-              <MultiImageUpload/>
+              <MultiImageUpload />
             </div>
             <div className="flex justify-evenly p-3">
               <button
-                onClick={handleSubmit}  
+                onClick={handleSubmit}
                 type="submit"
                 className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg  font-semibold leading-6 shadow-sm hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out "
               >

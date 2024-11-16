@@ -21,7 +21,7 @@ const ProductCard = ({ singleProductData }) => {
     console.log("prod")
   }
   return (
-    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white" onClick={navigateToProductDescriptionPage}>
+    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white" >
       <Image
         className="w-full"
         src="/background.jpg"
@@ -29,7 +29,7 @@ const ProductCard = ({ singleProductData }) => {
         width={30}
         height={50}
       />
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 " onClick={navigateToProductDescriptionPage}>
         <div className="font-bold text-xl mb-2">{productName}</div>
         <div className="text-gray-700 text-sm">{productDescription}</div>
       </div>
