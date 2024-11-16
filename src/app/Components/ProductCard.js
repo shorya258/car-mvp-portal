@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import ConfirmationModal from './ConfirmationModal'
 
 const ProductCard = ({singleProductData}) => {
-  const{productName, productDescription}=singleProductData;
+  const{_id, productName, productDescription}=singleProductData;
   const [openDeleteModal, toggleDeleteModal] = useState(false);
   const handleReject = () => {
     toggleDeleteModal(false)
@@ -13,6 +13,11 @@ const ProductCard = ({singleProductData}) => {
   const handleApprove = () => {
     toggleDeleteModal(false)
   }
+  console.log(singleProductData)
+    const navigateToForm=()=>{
+      console.log(yo)
+      router.push(`cars-form-${_id}`);
+    }
   return (
     <div className="mx-auto rounded overflow-hidden shadow-lg bg-white">
       <Image
