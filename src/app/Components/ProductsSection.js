@@ -36,10 +36,10 @@ const ProductsSection = () => {
     }
   }, []);
   return (
-    <div className="z-10 p-5 absolute bg-transparent min-h-full w-[80%] rounded-lg -top-20 grid grid-cols-4 gap-4">
+    <div className="p-8 bg-transparent min-h-full w-[90%] rounded-lg -top-20 grid grid-cols-4 gap-8">
       {
         allProducts?.map((singleProductData, key)=>{
-          return(<ProductCard className="row-cols-2" singleProductData={singleProductData} key={key}/>)
+          return(<ProductCard singleProductData={singleProductData} key={key}/>)
         })
       }
     </div>

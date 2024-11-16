@@ -7,11 +7,11 @@ const ProductCard = () => {
     
     
   return (
-    <div className="mx-auto max-w-sm rounded overflow-hidden shadow-lg bg-white">
+    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white">
   <Image className="w-full" src="/background.jpg" alt="Sunset in the mountains" width={30} height={50}/>
-  <div className="px-6 py-4">
+  <div className="px-6 pt-4">
     <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-    <p className="text-gray-700 text-base">
+    <p className="text-gray-700 text-sm">
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
     </p>
   </div>

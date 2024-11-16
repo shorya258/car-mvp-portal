@@ -13,7 +13,7 @@ const dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="bg-gray-300 h-[60%] flex justify-center items-center relative ">
+      <div className="bg-gray-300 h-auto flex justify-center items-center relative ">
         <ProductsSection />
       </div>
     </div>
