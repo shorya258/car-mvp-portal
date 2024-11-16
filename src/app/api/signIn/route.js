@@ -2,7 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { NextResponse } from "next/server";
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 export async function POST(req) {
   await dbConnect();
   try {
@@ -37,7 +37,11 @@ export async function POST(req) {
             { status: 400 }
           );
     }
-    const authToken= jwt.sign(existingUserByEmail.username, process.env.JWT_SECRET)
+    const dataToStore= {
+      username:existingUserByEmail.username,
+      userId:existingUserByEmail._id
+    }
+    const authToken= jwt.sign(dataToStore, process.env.JWT_SECRET)
     return NextResponse.json(
         {
           success: true,
