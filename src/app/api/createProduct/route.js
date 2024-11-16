@@ -7,7 +7,7 @@ export async function POST(req) {
       await dbConnect();
     const body = await req.json();
     console.log(body)
-    const { userId, productDetails } = body;
+    const { userId, productDetails , productImages } = body;
     if (!userId || !productDetails) {
       return NextResponse.json(
         {
@@ -22,7 +22,7 @@ export async function POST(req) {
         productName:productDetails.productName,
         productDescription: productDetails.productDescription,
         tags:productDetails.tags ||[],
-        images:productDetails.images||[]
+        images:productImages||[]
     })
     await newProduct.save();
     return NextResponse.json(

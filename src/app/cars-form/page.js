@@ -5,11 +5,19 @@ import MultiImageUpload from "../Components/ImageUpload";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import firebaseApp from "../../../firebaseConfig";
 const carsForm = () => {
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
-  const [uploadedFileLinks, setUploadedFileLinks] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [productDetails, setProductDetails] = useState({
     productName: "",
     productDescription: "",
@@ -35,7 +43,7 @@ const carsForm = () => {
       console.log(json.message);
     }
   };
-  const createSingleProduct = async () => {
+  const createSingleProduct = async (imagesData) => {
     // console.log("user id", userId, "product details", productDetails)
     const response = await fetch("api/createProduct", {
       method: "POST",
@@ -45,6 +53,7 @@ const carsForm = () => {
       body: JSON.stringify({
         userId,
         productDetails,
+        productImages : imagesData
       }),
     });
     const json = await response.json();
@@ -74,10 +83,11 @@ const carsForm = () => {
       console.log(json.message);
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!productId) {
-      createSingleProduct();
+      const uploadedImages = await uploadImagesToFirebase();
+      createSingleProduct(uploadedImages);
       console.log("created");
     } else {
       updateSingleProduct();
@@ -123,12 +133,49 @@ const carsForm = () => {
       fetchSingleProduct(productId);
     }
   }, []);
-
-  const handleUploadedImages = (uploadedFileLinks) => {
-    console.log(uploadedFileLinks, "uploadedFileLinks");
+  const handleSelectedImages = (newImages) =>{
+    console.log(newImages, "newImages");
     
-    setUploadedFileLinks(uploadedFileLinks);
+    setSelectedImages([...selectedImages, ...newImages]);
   }
+  const uploadImagesToFirebase = async () => {
+    const uploadedImages = [];
+    console.log(selectedImages, "selectedImg");
+    
+    for (const file of selectedImages) {
+      const uploadedImage = await uploadImage(file);
+      uploadedImages.push(uploadedImage)
+    }
+    return uploadedImages;
+  };
+  const uploadImage = async (image) => {
+    console.log(image, "image1");
+    
+    return new Promise((resolve, reject) => {
+    const storage = getStorage(firebaseApp);
+    const storageRef = ref(storage, `images/${image.file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, image.file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log(`Upload is ${progress}% done`);
+      },
+      (error) => {
+        console.error("Upload failed:", error);
+      },
+      async () => {
+        // Upload completed
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        console.log(`Upload completed for , URL: ${downloadURL}`);
+        const uploadedImage = {imgName : image.file.name, imgUrl : downloadURL};
+        resolve(uploadedImage);
+      }
+    );
+    })
+  };
 
   return (
     <div className="flex flex-col p-5 items-center bg-gray-300">
@@ -219,7 +266,7 @@ const carsForm = () => {
                   })}
                 </div>
               </div>
-              <MultiImageUpload handleUploadedImages={handleUploadedImages}/>
+              <MultiImageUpload handleSelectedImages = {handleSelectedImages}/>
             </div>
             <div className="flex justify-evenly p-3">
               <button

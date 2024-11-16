@@ -5,6 +5,9 @@ const tagSchema = new Schema({
   },
 });
 const imgSchema = new Schema({
+  imgName : {
+    type: String,
+  },
   imgUrl: {
     type: String,
   },

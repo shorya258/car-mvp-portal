@@ -1,12 +1,5 @@
 import React, { useState } from "react";
 import { Button, IconButton } from "@mui/material";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import firebaseApp from "../../../firebaseConfig";
 
 const MAX_IMAGES = 10;
 
@@ -27,7 +20,7 @@ const MultiImageUpload = (props) => {
       file,
       preview: URL.createObjectURL(file),
     }));
-
+    props.handleSelectedImages(newImages);
     setImages((prevImages) => [...prevImages, ...newImages]);
   };
 
@@ -40,46 +33,9 @@ const MultiImageUpload = (props) => {
     });
   };
 
-  const processArrayConcurrently = async () => {
-    const downloadURLs = [];
-    for (const file of images) {
-      const url = await uploadImage(file);
-      downloadURLs.push(url)
-    }
-    props.handleUploadedImages(downloadURLs);
-  };
-  const uploadImage = async (image) => {
-    return new Promise((resolve, reject) => {
-    const storage = getStorage(firebaseApp);
-    const storageRef = ref(storage, `images/${image.file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, image.file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload is ${progress}% done`);
-      },
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      async () => {
-        // Upload completed
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        console.log(`Upload completed for , URL: ${downloadURL}`);
-        resolve(downloadURL);
-      }
-    );
-    })
-  };
-
   return (
     <>
       <div className="sm:col-span-4">
-        <Button variant="contained" component="span" onClick={processArrayConcurrently}>
-          Submit
-        </Button>
         <label
           htmlFor="productName"
           className="block text-sm/6 font-medium text-gray-900"

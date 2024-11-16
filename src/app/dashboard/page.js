@@ -45,10 +45,9 @@ const dashboard = () => {
       {/* Bottom Section */}
       <div className="bg-gray-300 min-h-[60%] h-auto flex justify-center items-center relative ">
         <div className="p-8 bg-transparent min-h-full w-[90%] rounded-lg -top-20 grid grid-cols-4 gap-8">
-          {fetchedProducts && fetchedProducts.length !== 0 &&
-            fetchedProducts?.map((singleProductData, key) => (
-              <ProductCard singleProductData={singleProductData} key={key} />
-            ))}
+          {fetchedProducts?.map((singleProductData, key) => (
+            <ProductCard singleProductData={singleProductData} key={key} />
+          ))}
         </div>
       </div>
     </div>
