@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import ProductCard from "./ProductCard";
 import { jwtDecode } from "jwt-decode";
 const ProductsSection = () => {
-  const [allProducts, setAllProducts] = useState([]);
+  const [fetchedProducts, setFetchedProducts] = useState([]);
   const fetchAllProductsByUserID = async (userId) => {
     const response = await fetch("api/fetchAllProductsForUser", {
       method: "POST",
@@ -16,8 +16,7 @@ const ProductsSection = () => {
       }),
     });
     const json = await response.json();
-    console.log("fetched products",json);
-    setAllProducts(json.products);
+    setFetchedProducts(json.products);
     if (response.status === 201) {
       console.log(json.message);
     } else {
@@ -38,7 +37,8 @@ const ProductsSection = () => {
   return (
     <div className="z-10 p-5 absolute bg-transparent min-h-full w-[80%] rounded-lg -top-20 grid grid-cols-4 gap-4">
       {
-        allProducts?.map((singleProductData, key)=>{
+        fetchedProducts.length!==0 &&
+        fetchedProducts?.map((singleProductData, key)=>{
           return(<ProductCard className="row-cols-2" singleProductData={singleProductData} key={key}/>)
         })
       }
