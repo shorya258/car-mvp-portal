@@ -4,14 +4,8 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
-const images = [
-  "https://firebasestorage.googleapis.com/v0/b/ecom-platform-72d4b.appspot.com/o/images%2FRectangle%206672.png?alt=media&token=97076d91-de90-4abf-9f9a-c474513ede8f",
-  "https://firebasestorage.googleapis.com/v0/b/ecom-platform-72d4b.appspot.com/o/images%2FRectangle%206672.png?alt=media&token=97076d91-de90-4abf-9f9a-c474513ede8f",
-  "https://firebasestorage.googleapis.com/v0/b/ecom-platform-72d4b.appspot.com/o/images%2FRectangle%206672.png?alt=media&token=97076d91-de90-4abf-9f9a-c474513ede8f",
-  "https://firebasestorage.googleapis.com/v0/b/ecom-platform-72d4b.appspot.com/o/images%2FRectangle%206672.png?alt=media&token=97076d91-de90-4abf-9f9a-c474513ede8f",
-  "https://firebasestorage.googleapis.com/v0/b/ecom-platform-72d4b.appspot.com/o/images%2FRectangle%206672.png?alt=media&token=97076d91-de90-4abf-9f9a-c474513ede8f",
-];
-const Carousel = () => {
+
+const Carousel = ({productImages}) => {
   return (
     <div className="w-full max-w-4xl mx-auto">
     <Swiper
@@ -27,10 +21,11 @@ const Carousel = () => {
         1024: { slidesPerView: 3 },
       }}
     >
-      {images.map((url, index) => (
+      {console.log(productImages, "productImages")}
+      {productImages?.map((img, index) => (
         <SwiperSlide key={index}>
           <img
-            src={url}
+            src={img.imgUrl}
             alt={`Slide ${index + 1}`}
             className="w-full h-auto rounded-lg"
           />

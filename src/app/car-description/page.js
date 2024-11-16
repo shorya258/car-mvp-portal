@@ -42,7 +42,7 @@ const page = () => {
           {productDetails.productName}
         </div>
         <div className="flex-grow-1 p-2 md:p-5" >
-          <Carousel/>
+          <Carousel productImages = {productDetails.images} />
         </div>
       </div>
       <div className="flex-grow-[2] bg-white flex flex-col px-4">
