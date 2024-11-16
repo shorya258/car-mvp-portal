@@ -37,11 +37,11 @@ const page = () => {
 
   return (
     <div className="min-h-screen flex flex-col mx-auto">
-      <div className="h-full flex flex-col flex-grow-[2] bg-blue-950 ">
-        <div className=" flex-grow-1 text-left text-6xl text-white font-bold py-10 px-5">
+      <div className="h-full flex flex-col flex-grow-[2] bg-blue-950 justify-end">
+        <div className=" flex-grow-1 text-center text-6xl text-white font-bold py-10 px-5">
           {productDetails.productName}
         </div>
-        <div className="flex-grow-1" >
+        <div className="flex-grow-1 p-2 md:p-5" >
           <Carousel/>
         </div>
       </div>
