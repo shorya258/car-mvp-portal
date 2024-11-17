@@ -5,7 +5,7 @@ export async function PUT(req) {
   await dbConnect();
   try {
     const body = await req.json();
-    const { productDetails , newImages, retainedImages} = body;
+    const { productDetails, newImages, retainedImages } = body;
     if (!productDetails || !productDetails._id) {
       return NextResponse.json(
         {
@@ -34,8 +34,8 @@ export async function PUT(req) {
       );
     }
     const productId = productDetails._id;
-    const productToBeUpdated= await ProductModel.findById(productId);
-    if(!productToBeUpdated) {
+    const productToBeUpdated = await ProductModel.findById(productId);
+    if (!productToBeUpdated) {
       return NextResponse.json(
         {
           success: false,
@@ -43,23 +43,14 @@ export async function PUT(req) {
         },
         { status: 400 }
       );
-    } 
-    const existingImages = productToBeUpdated.images;
-    console.log(existingImages , "existingImages")
-    console.log(retainedImages , "retainedImages")
-    const imagesToRemove = existingImages.filter(
-      (img) => !retainedImages.includes(img)
-    );
-    console.log(imagesToRemove , "imagesToRemove")
-    console.log(newImages, "newImages")
+    }
+    const finalImages = [...retainedImages, ...newImages];
     await ProductModel.findByIdAndUpdate(
       productId,
-      { $set: productDetails },
       {
-        $pull: { images: { $in: imagesToRemove } }, // Remove deleted images
-        $addToSet: { images: { $each: newImages } }, // Add new images
+        $set: { productDetails, images: finalImages },
       },
-      { runValidators: true, new: true }
+      { new: true, runValidators: true }
     );
     return NextResponse.json(
       {
@@ -93,8 +84,8 @@ export async function DELETE(req) {
         { status: 400 }
       );
     }
-    const productToBeDeleted= await ProductModel.findById(productId);
-    if(!productToBeDeleted) {
+    const productToBeDeleted = await ProductModel.findById(productId);
+    if (!productToBeDeleted) {
       return NextResponse.json(
         {
           success: false,
