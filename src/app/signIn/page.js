@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TypeAnimation } from "react-type-animation";
+export const dynamic = 'force-dynamic'
 const signIn = () => {
   const router= useRouter();
   const [credentials, setCredentials] = useState({
