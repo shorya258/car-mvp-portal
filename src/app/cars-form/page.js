@@ -12,7 +12,9 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import firebaseApp from "../../../firebaseConfig";
+import { useRouter } from "next/navigation";
 const CarsForm = () => {
+  const router= useRouter(); 
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
@@ -97,6 +99,7 @@ const CarsForm = () => {
       console.log("updated");
     }
     console.log("changes saved");
+    router.push('/dashboard')
   };
   const onChange = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
@@ -105,6 +108,10 @@ const CarsForm = () => {
 
   const handleAddTag = (e) => {
     e.preventDefault();
+    if(tagInput.trim().length===0){
+      console.log("a tag can't be empty")
+      return;
+    }
     setProductDetails((prevDetails) => ({
       ...prevDetails,
       tags: [...prevDetails.tags, { tagName: tagInput.trim() }],
@@ -113,12 +120,9 @@ const CarsForm = () => {
     setTagInput("");
   };
   const handleRemoveTag=(tagToRemove)=>{
-    console.log("")
-    let tempTags=productDetails.tags;
-    tempTags= tempTags.filter((tag)=>(tagToRemove!=tag))
     setProductDetails((prevDetails) => ({
       ...prevDetails,
-      tags: tempTags,
+      tags:  prevDetails.tags.filter((tag) => tag.tagName !== tagToRemove),
     }));
     console.log("tag removed", productDetails)
   }
@@ -250,8 +254,8 @@ const CarsForm = () => {
                 >
                   Tag Name
                 </label>
-                {productDetails.tags.length > 5 ? (
-                  <div>You can only enter 5 tags at max!</div>
+                {productDetails.tags.length=== 5 ? (
+                  <div>You are at the limit!</div>
                 ) : (
                   <>
                     <input

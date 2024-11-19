@@ -45,13 +45,13 @@ export async function PUT(req) {
       );
     }
     const finalImages = [...retainedImages, ...newImages];
-    await ProductModel.findByIdAndUpdate(
-      productId,
-      {
-        $set: { productDetails, images: finalImages },
-      },
-      { new: true, runValidators: true }
-    );
+    await ProductModel.findByIdAndUpdate(productId, {
+      user: productToBeUpdated.userId,
+      productName: productDetails.productName,
+      productDescription: productDetails.productDescription,
+      tags: productDetails.tags || [],
+      images: finalImages,
+    });
     return NextResponse.json(
       {
         success: true,
