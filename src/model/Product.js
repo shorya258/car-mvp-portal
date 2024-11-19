@@ -27,7 +27,7 @@ const ProductSchema = new Schema({
   tags: [tagSchema],
   images: [imgSchema],
   user: {
-    type: mongoose.Schema.Types.ObjectId ,
+    type: mongoose.Schema.Types.ObjectId , 
     ref: "UserModel",
     required: [true, "User id is required"],
     required: true,

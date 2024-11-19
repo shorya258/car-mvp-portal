@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import ProductModel from "@/model/Product";
 import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 export async function POST(req) {
   await dbConnect();
   try {
