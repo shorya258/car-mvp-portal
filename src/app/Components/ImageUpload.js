@@ -58,6 +58,7 @@ const MultiImageUpload = (props) => {
               variant="contained"
               component="span"
               disabled={images.length >= MAX_IMAGES}
+              className="inline p-3 rounded-md border-0 text-white bg-gray-800 "
             >
               {images.length >= MAX_IMAGES ? "Limit Reached" : "Upload Images"}
             </Button>

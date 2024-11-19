@@ -4,8 +4,9 @@ import React, { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import { useRouter } from "next/navigation";
 const ProductCard = ({ singleProductData }) => {
-  const router= useRouter();
-  const { _id, productName, productDescription } = singleProductData;
+  const router = useRouter();
+  const { _id, productName, productDescription, images } = singleProductData;
+  const cardImage = images[0].imgUrl;
   const [openDeleteModal, toggleDeleteModal] = useState(false);
   const handleReject = () => {
     toggleDeleteModal(false);
@@ -16,34 +17,36 @@ const ProductCard = ({ singleProductData }) => {
   const navigateToForm = () => {
     router.push(`/cars-form?requestId=${_id}`);
   };
-  const navigateToProductDescriptionPage=()=>{
-    router.push(`/car-description?requestId=${_id}`)
-    console.log("prod")
-  }
+  const navigateToProductDescriptionPage = () => {
+    router.push(`/car-description?requestId=${_id}`);
+    console.log("prod");
+  };
   return (
-    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white" >
-      <Image
-        className="w-full"
-        src="/background.jpg"
-        alt="Sunset in the mountains"
-        width={30}
-        height={50}
-      />
-      <div className="px-6 py-4 " onClick={navigateToProductDescriptionPage}>
-        <div className="font-bold text-xl mb-2">{productName}</div>
-        <div className="text-gray-700 text-sm">{productDescription}</div>
-      </div>
-      <div className="px-6 pt-4 pb-2">
-        {singleProductData.tags.map((tag, index) => {
-          return (
-            <span
-              key={index}
-              className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-default"
-            >
-              #{tag.tagName}
-            </span>
-          );
-        })}
+    <div className="mx-auto rounded overflow-hidden shadow-lg bg-white cursor-default">
+      <div onClick={navigateToProductDescriptionPage}>
+        <Image
+          className="w-full"
+          src={cardImage}
+          alt="Sunset in the mountains"
+          width={200}
+          height={200}
+        />
+        <div className="px-6 py-4 ">
+          <div className="font-bold text-xl mb-2">{productName}</div>
+          <div className="text-gray-700 text-sm">{productDescription}</div>
+        </div>
+        <ul className="px-6 pt-4 pb-2">
+          {singleProductData.tags.map((tag, index) => {
+            return (
+              <li
+                key={index}
+                className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-default"
+              >
+               {tag.tagName}
+              </li>
+            );
+          })}
+        </ul>
       </div>
       <div className="flex justify-evenly p-3">
         <button

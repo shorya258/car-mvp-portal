@@ -14,7 +14,7 @@ import {
 import firebaseApp from "../../../firebaseConfig";
 import { useRouter } from "next/navigation";
 const CarsForm = () => {
-  const router= useRouter(); 
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [productId, setProductId] = useState(searchParams.get("requestId"));
   const [userId, setUserId] = useState("");
@@ -56,7 +56,7 @@ const CarsForm = () => {
       body: JSON.stringify({
         userId,
         productDetails,
-        productImages : imagesData
+        productImages: imagesData,
       }),
     });
     const json = await response.json();
@@ -76,8 +76,8 @@ const CarsForm = () => {
       },
       body: JSON.stringify({
         productDetails,
-        retainedImages : existingImages,
-        newImages : uploadedImages
+        retainedImages: existingImages,
+        newImages: uploadedImages,
       }),
     });
     const json = await response.json();
@@ -99,7 +99,7 @@ const CarsForm = () => {
       console.log("updated");
     }
     console.log("changes saved");
-    router.push('/dashboard')
+    router.push("/dashboard");
   };
   const onChange = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
@@ -108,8 +108,8 @@ const CarsForm = () => {
 
   const handleAddTag = (e) => {
     e.preventDefault();
-    if(tagInput.trim().length===0){
-      console.log("a tag can't be empty")
+    if (tagInput.trim().length === 0) {
+      console.log("a tag can't be empty");
       return;
     }
     setProductDetails((prevDetails) => ({
@@ -119,13 +119,13 @@ const CarsForm = () => {
     // console.log(productDetails);
     setTagInput("");
   };
-  const handleRemoveTag=(tagToRemove)=>{
+  const handleRemoveTag = (tagToRemove) => {
     setProductDetails((prevDetails) => ({
       ...prevDetails,
-      tags:  prevDetails.tags.filter((tag) => tag.tagName !== tagToRemove),
+      tags: prevDetails.tags.filter((tag) => tag.tagName !== tagToRemove),
     }));
-    console.log("tag removed", productDetails)
-  }
+    console.log("tag removed", productDetails);
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
@@ -133,68 +133,76 @@ const CarsForm = () => {
       if (authToken) {
         const storedData = jwtDecode(authToken);
         console.log("stored data", storedData);
-        setUserId(storedData.userId)
+        setUserId(storedData.userId);
       }
     }
     if (productId) {
       fetchSingleProduct(productId);
     }
   }, []);
-  const handleSelectedImages = (newImages) =>{
+  const handleSelectedImages = (newImages) => {
     console.log(newImages, "newImages");
-    
+
     setSelectedImages([...selectedImages, ...newImages]);
-  }
+  };
   const uploadImagesToFirebase = async () => {
     const uploadedImages = [];
     console.log(selectedImages, "selectedImg");
-    
+
     for (const file of selectedImages) {
       const uploadedImage = await uploadImage(file);
-      uploadedImages.push(uploadedImage)
+      uploadedImages.push(uploadedImage);
     }
     return uploadedImages;
   };
   const uploadImage = async (image) => {
     console.log(image, "image1");
-    
-    return new Promise((resolve, reject) => {
-    const storage = getStorage(firebaseApp);
-    const storageRef = ref(storage, `images/${image.file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, image.file);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload is ${progress}% done`);
-      },
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      async () => {
-        // Upload completed
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        console.log(`Upload completed for , URL: ${downloadURL}`);
-        const uploadedImage = {imgName : image.file.name, imgUrl : downloadURL};
-        resolve(uploadedImage);
-      }
-    );
-    })
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(firebaseApp);
+      const storageRef = ref(storage, `images/${image.file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, image.file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Upload failed:", error);
+        },
+        async () => {
+          // Upload completed
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log(`Upload completed for , URL: ${downloadURL}`);
+          const uploadedImage = {
+            imgName: image.file.name,
+            imgUrl: downloadURL,
+          };
+          resolve(uploadedImage);
+        }
+      );
+    });
   };
   const handleRemoveExistingImage = (deletedId) => {
-    let updatedOldImageList = existingImages.filter(image => image._id !== deletedId)
+    let updatedOldImageList = existingImages.filter(
+      (image) => image._id !== deletedId
+    );
     setExistingImages(updatedOldImageList);
   };
-
+  const handleCancel = (e) => {
+    e.preventDefault();
+    router.push("/dashboard");
+  };
 
   return (
     <div className="flex flex-col p-5 items-center bg-gray-300">
       <form className="bg-white px-10 py-5 shadow-lg rounded-lg shadow-gray-600 min-w-[50%] ">
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-lg font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900">
               Create a car profile
             </h2>
             <p className="mt-1 text-sm/6 text-gray-600">
@@ -210,7 +218,7 @@ const CarsForm = () => {
                   Model Name
                 </label>
                 <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                  <div className="flex ">
                     <input
                       id="productName"
                       name="productName"
@@ -219,7 +227,7 @@ const CarsForm = () => {
                       autoComplete="productName"
                       value={productDetails.productName}
                       onChange={onChange}
-                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
+                      className="block w-full rounded-md border-0 p-1.5   shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6 text-black sm:text-sm/6"
                     />
                   </div>
                 </div>
@@ -239,7 +247,7 @@ const CarsForm = () => {
                     value={productDetails.productDescription}
                     onChange={onChange}
                     rows={3}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                    className="p-1.5 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                   />
                 </div>
                 <p className="mt-3 text-sm/6 text-gray-600">
@@ -249,13 +257,13 @@ const CarsForm = () => {
 
               <div className="sm:col-span-4">
                 <label
-                  htmlFor="productName"
+                  htmlFor="tagname"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
                   Tag Name
                 </label>
-                {productDetails.tags.length=== 5 ? (
-                  <div>You are at the limit!</div>
+                {productDetails.tags.length === 5 ? (
+                  <div className="text-red-500 ">You are at the limit!</div>
                 ) : (
                   <>
                     <input
@@ -263,22 +271,44 @@ const CarsForm = () => {
                       placeholder="Enter tag"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
+                      className="inline rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                     />
-                    <button onClick={handleAddTag}>Add Tag</button>
+                    <button
+                      onClick={handleAddTag}
+                      className={`inline m-2 p-1.5 ${
+                        tagInput != ""
+                          ? "rounded-md border-0 text-white bg-gray-800 "
+                          : "border-none"
+                      }`}
+                    >
+                      Add Tag
+                    </button>
                   </>
                 )}
-                <div className="flex gap-3" >
-
-                {productDetails.tags.length !== 0 &&
-                  productDetails.tags.map((singleTag, key) => {
-                    return <div key={key} className="rounded-md bg-indigo-600 text-white p-2" >
-                      {singleTag.tagName}
-                      <FontAwesomeIcon icon={faXmark} className="text-white" onClick={()=>(handleRemoveTag(singleTag.tagName))} />
-                      </div>;
-                  })}
+                <div className="flex gap-3">
+                  {productDetails.tags.length !== 0 &&
+                    productDetails.tags.map((singleTag, key) => {
+                      return (
+                        <div
+                          key={key}
+                          className="rounded-md bg-gray-200 text-gray-700 p-2"
+                        >
+                          {singleTag.tagName}{" "}
+                          <FontAwesomeIcon
+                            icon={faXmark}
+                            className="text-gray-700"
+                            onClick={() => handleRemoveTag(singleTag.tagName)}
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
-              <MultiImageUpload handleRemoveExistingImage={handleRemoveExistingImage} existingImages = {existingImages} handleSelectedImages = {handleSelectedImages}/>
+              <MultiImageUpload
+                handleRemoveExistingImage={handleRemoveExistingImage}
+                existingImages={existingImages}
+                handleSelectedImages={handleSelectedImages}
+              />
             </div>
             <div className="flex justify-evenly p-3">
               <button
@@ -288,7 +318,10 @@ const CarsForm = () => {
               >
                 Save changes
               </button>
-              <button className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg font-semibold leading-6 shadow-sm hover:bg-black hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out">
+              <button
+                className="flex w-1/2 mx-2 px-3 py-1.5 justify-center rounded-md border-2 border-solid border-gray-300 hover:border-none text-sm md:text-lg font-semibold leading-6 shadow-sm hover:bg-gray-900 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black hover:-translate-y-1 transition-transform duration-300 ease-in-out"
+                onClick={handleCancel}
+              >
                 Cancel
               </button>
             </div>
