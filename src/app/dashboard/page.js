@@ -27,6 +27,9 @@ const dashboard = () => {
       console.log(json.message);
     }
   };
+  const removeProduct = (productId) => {
+    setFetchedProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
@@ -54,7 +57,7 @@ const dashboard = () => {
         >
           {fetchedProducts && fetchedProducts.length != 0 ? (
             fetchedProducts?.map((singleProductData, key) => (
-              <ProductCard singleProductData={singleProductData} key={key} />
+              <ProductCard singleProductData={singleProductData} key={key} onDelete={removeProduct} />
             ))
           ) : (
             <div

@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-
+import { useRouter } from 'next/navigation'
 export default function ConfirmationModal({handleApprove, handleReject}) {
+  const router= useRouter();
   const [open, setOpen] = useState(true)
   const handleFormApprove = () => {
     console.log("called")
@@ -11,7 +12,6 @@ export default function ConfirmationModal({handleApprove, handleReject}) {
     setOpen(false);
   }
   const handleFormReject = () => {
-    console.log("called2")
     handleReject();
     setOpen(false);
   }
