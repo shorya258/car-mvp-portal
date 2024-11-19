@@ -8,6 +8,13 @@ const ProductCard = ({ singleProductData, onDelete }) => {
   const { _id, productName, productDescription, images } = singleProductData;
   const cardImage = images[0].imgUrl;
   const [openDeleteModal, toggleDeleteModal] = useState(false);
+  function truncateDescription(description) {
+    const limit = 100;
+    if (description.length > limit) {
+      return description.slice(0, limit);
+    }
+    return description;
+  }
   const handleReject = () => {
     toggleDeleteModal(false);
   };
@@ -22,15 +29,15 @@ const ProductCard = ({ singleProductData, onDelete }) => {
     router.push(`/car-description?requestId=${_id}`);
     console.log("prod");
   };
-  const handleDeleteProduct=async()=>{
-    console.log("prod deleted")
+  const handleDeleteProduct = async () => {
+    console.log("prod deleted");
     const response = await fetch("api/updateProduct", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        productId:_id
+        productId: _id,
       }),
     });
     const json = await response.json();
@@ -41,7 +48,7 @@ const ProductCard = ({ singleProductData, onDelete }) => {
     } else {
       console.log(json.message);
     }
-  }
+  };
   return (
     <div className="mx-auto rounded overflow-hidden shadow-lg bg-white cursor-default">
       <div onClick={navigateToProductDescriptionPage}>
@@ -54,7 +61,10 @@ const ProductCard = ({ singleProductData, onDelete }) => {
         />
         <div className="px-6 py-4 ">
           <div className="font-bold text-xl mb-2">{productName}</div>
-          <div className="text-gray-700 text-sm">{productDescription}</div>
+          <div className="text-gray-700 text-sm">
+            {truncateDescription(productDescription)}
+            <span className="text-gray-900"> ...read more</span>
+          </div>
         </div>
         <ul className="px-6 pt-4 pb-2">
           {singleProductData.tags.map((tag, index) => {
@@ -63,7 +73,7 @@ const ProductCard = ({ singleProductData, onDelete }) => {
                 key={index}
                 className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-default"
               >
-               {tag.tagName}
+                {tag.tagName}
               </li>
             );
           })}
