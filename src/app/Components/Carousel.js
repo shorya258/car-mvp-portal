@@ -24,11 +24,13 @@ const Carousel = ({productImages}) => {
       {console.log(productImages, "productImages")}
       {productImages?.map((img, index) => (
         <SwiperSlide key={index}>
+           <div className="relative w-full h-64">
           <img
             src={img.imgUrl}
             alt={`Slide ${index + 1}`}
-            className="w-full h-auto rounded-lg"
+            className="object-cover w-full h-full rounded-lg"
           />
+        </div>
         </SwiperSlide>
       ))}
     </Swiper>

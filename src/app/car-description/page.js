@@ -51,7 +51,7 @@ const CarsDescription = () => {
             Overview
           </span>
         </div>
-        <div className="p-3 text-xl tracking-tight">
+        <div className="p-3 text-xl tracking-tight text-gray-500">
           {productDetails.productDescription}
         </div>
         <div className="flex gap-5">
