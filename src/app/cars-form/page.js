@@ -13,6 +13,7 @@ import {
 } from "firebase/storage";
 import firebaseApp from "../../../firebaseConfig";
 import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
 const CarsForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,17 +38,14 @@ const CarsForm = () => {
       }),
     });
     const json = await response.json();
-    console.log("prod details", json);
-    setProductDetails(json.singleProduct);
-    setExistingImages(json.singleProduct.images);
     if (response.status === 201) {
-      console.log(json.message);
+      setProductDetails(json.singleProduct);
+      setExistingImages(json.singleProduct.images);
     } else {
       console.log(json.message);
     }
   };
   const createSingleProduct = async (imagesData) => {
-    // console.log("user id", userId, "product details", productDetails)
     const response = await fetch("api/createProduct", {
       method: "POST",
       headers: {
@@ -60,15 +58,15 @@ const CarsForm = () => {
       }),
     });
     const json = await response.json();
-    console.log("prod creation", json);
     if (response.status === 201) {
       console.log(json.message);
+      // toast.success(json.message);
     } else {
       console.log(json.message);
+      // toast.error(json.message);
     }
   };
   const updateSingleProduct = async (uploadedImages) => {
-    console.log("update api called", productDetails);
     const response = await fetch("api/updateProduct", {
       method: "PUT",
       headers: {
@@ -81,11 +79,12 @@ const CarsForm = () => {
       }),
     });
     const json = await response.json();
-    console.log("prod updation", json);
     if (response.status === 201) {
       console.log(json.message);
+      // toast.success(json.message);
     } else {
       console.log(json.message);
+      // toast.error(json.message);
     }
   };
   const handleSubmit = async (e) => {
@@ -98,7 +97,7 @@ const CarsForm = () => {
       updateSingleProduct(uploadedImages);
       console.log("updated");
     }
-    console.log("changes saved");
+    // console.log("changes saved");
     router.push("/dashboard");
   };
   const onChange = (e) => {
@@ -110,13 +109,13 @@ const CarsForm = () => {
     e.preventDefault();
     if (tagInput.trim().length === 0) {
       console.log("a tag can't be empty");
+      // toast.error("a tag can't be empty");
       return;
     }
     setProductDetails((prevDetails) => ({
       ...prevDetails,
       tags: [...prevDetails.tags, { tagName: tagInput.trim() }],
     }));
-    // console.log(productDetails);
     setTagInput("");
   };
   const handleRemoveTag = (tagToRemove) => {
@@ -124,15 +123,12 @@ const CarsForm = () => {
       ...prevDetails,
       tags: prevDetails.tags.filter((tag) => tag.tagName !== tagToRemove),
     }));
-    console.log("tag removed", productDetails);
   };
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
-      console.log(authToken);
       if (authToken) {
         const storedData = jwtDecode(authToken);
-        console.log("stored data", storedData);
         setUserId(storedData.userId);
       }
     }
@@ -141,13 +137,10 @@ const CarsForm = () => {
     }
   }, []);
   const handleSelectedImages = (newImages) => {
-    console.log(newImages, "newImages");
-
     setSelectedImages([...selectedImages, ...newImages]);
   };
   const uploadImagesToFirebase = async () => {
     const uploadedImages = [];
-    console.log(selectedImages, "selectedImg");
 
     for (const file of selectedImages) {
       const uploadedImage = await uploadImage(file);
@@ -156,7 +149,6 @@ const CarsForm = () => {
     return uploadedImages;
   };
   const uploadImage = async (image) => {
-    console.log(image, "image1");
 
     return new Promise((resolve, reject) => {
       const storage = getStorage(firebaseApp);
@@ -168,7 +160,6 @@ const CarsForm = () => {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
         },
         (error) => {
           console.error("Upload failed:", error);
@@ -176,7 +167,6 @@ const CarsForm = () => {
         async () => {
           // Upload completed
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log(`Upload completed for , URL: ${downloadURL}`);
           const uploadedImage = {
             imgName: image.file.name,
             imgUrl: downloadURL,
@@ -198,7 +188,9 @@ const CarsForm = () => {
   };
 
   return (
-    <div className="flex flex-col p-5 items-center bg-gray-300">
+    <div>
+      {/* <ToastContainer/> */}
+      <div className="flex flex-col p-5 items-center bg-gray-300">
       <form className="bg-white px-10 py-5 shadow-lg rounded-lg shadow-gray-600 min-w-[50%] ">
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
@@ -328,6 +320,7 @@ const CarsForm = () => {
           </div>
         </div>
       </form>
+    </div>
     </div>
   );
 };

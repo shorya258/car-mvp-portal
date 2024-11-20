@@ -11,7 +11,6 @@ const CarsDescription = () => {
     tags: [],
     images: [],
   });
-  console.log(productId);
   const fetchSingleProduct = async (productId) => {
     const response = await fetch("api/fetchSingleProduct", {
       method: "POST",
@@ -23,7 +22,6 @@ const CarsDescription = () => {
       }),
     });
     const json = await response.json();
-    console.log("prod details in car desc page", json);
     setProductDetails(json.singleProduct);
     if (response.status === 201) {
       console.log(json.message);

@@ -21,7 +21,6 @@ const Carousel = ({productImages}) => {
         1024: { slidesPerView: 3 },
       }}
     >
-      {console.log(productImages, "productImages")}
       {productImages?.map((img, index) => (
         <SwiperSlide key={index}>
            <div className="relative w-full h-64">

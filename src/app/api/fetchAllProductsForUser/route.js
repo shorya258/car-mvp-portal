@@ -17,7 +17,6 @@ export async function POST(req) {
       );
     }
     const productsByUserId = await ProductModel.find({ user: userId });
-    console.log(productsByUserId);
     if (productsByUserId.length===0) {
       return NextResponse.json(
         {

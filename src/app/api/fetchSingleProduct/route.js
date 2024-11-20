@@ -16,7 +16,6 @@ export async function POST(req) {
       );
     }
     const singleProduct = await ProductModel.findOne({ _id: productId });
-    console.log(singleProduct);
     if (!singleProduct) {
       return NextResponse.json(
         {

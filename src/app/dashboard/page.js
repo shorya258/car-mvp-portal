@@ -21,7 +21,6 @@ const dashboard = () => {
     });
     const json = await response.json();
     if (response.status === 201) {
-      console.log(json.message);
       setFetchedProducts(json.products);
     } else {
       console.log(json.message);
@@ -33,10 +32,8 @@ const dashboard = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
-      console.log(authToken);
       if (authToken) {
         const storedData = jwtDecode(authToken);
-        console.log("stored data", storedData);
         fetchAllProductsByUserID(storedData.userId);
       }
     }

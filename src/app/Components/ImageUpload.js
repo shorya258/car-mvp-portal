@@ -5,7 +5,6 @@ const MAX_IMAGES = 10;
 
 const MultiImageUpload = (props) => {
   const [images, setImages] = useState([]);
-  // console.log(props, "props")
   // Handle image selection
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files);

@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import ConfirmationModal from "./ConfirmationModal";
 import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
 const ProductCard = ({ singleProductData, onDelete }) => {
   const router = useRouter();
   const { _id, productName, productDescription, images } = singleProductData;
@@ -27,10 +28,8 @@ const ProductCard = ({ singleProductData, onDelete }) => {
   };
   const navigateToProductDescriptionPage = () => {
     router.push(`/car-description?requestId=${_id}`);
-    console.log("prod");
   };
   const handleDeleteProduct = async () => {
-    console.log("prod deleted");
     const response = await fetch("api/updateProduct", {
       method: "DELETE",
       headers: {
@@ -41,16 +40,16 @@ const ProductCard = ({ singleProductData, onDelete }) => {
       }),
     });
     const json = await response.json();
-    console.log("prod deleted", json);
     if (response.status === 201) {
       onDelete(_id);
-      console.log(json.message);
+      toast.success(json.message);
     } else {
-      console.log(json.message);
+      toast.error(json.message);
     }
   };
   return (
     <div className="mx-auto rounded overflow-hidden shadow-lg bg-white cursor-default">
+      <ToastContainer/>
       <div onClick={navigateToProductDescriptionPage}>
         <Image
           className="w-full"

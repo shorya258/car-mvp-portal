@@ -11,7 +11,7 @@ const Navbar = () => {
     router.push(`/cars-form`);
   };
   const handleLogout=()=>{
-    localStorage.removeItem(authStorageToken);
+    localStorage.removeItem("authStorageToken");
     router.push('/')
   }
   return (

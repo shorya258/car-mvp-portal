@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TypeAnimation } from "react-type-animation";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 export const dynamic = 'force-dynamic'
 const signIn = () => {
   const router= useRouter();
@@ -12,7 +14,6 @@ const signIn = () => {
   });
   const onSubmit = async(e) => {
     e.preventDefault();
-    console.log(credentials);
     const response = await fetch("api/signIn", {
       method: "POST",
       headers: {
@@ -27,17 +28,19 @@ const signIn = () => {
     let authStorageToken = json.authToken;
     localStorage.setItem("authStorageToken", authStorageToken);
     if (response.status===201) {
-      console.log(json.message);
+      toast.success(json.message);
       setTimeout(() => router.push("/dashboard"), 3000);
     } else {
-      console.log(json.message);
+      toast.error(json.message);
     } 
   };
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 h-screen">
+    <div>
+      <ToastContainer/>
+      <div className="grid grid-cols-1 md:grid-cols-12 h-screen">
       <div className="bg-gradient-to-r from-purple-800 via-indigo-500 to-violet-200 min-h-[20%] w-[100%] md:min-h-screen  md:flex col-span-5 self-start">
         <div className="self-center" >
           <h1 className="text-2xl font-serif font-extrabold p-2 md:p-4 text-white">
@@ -144,6 +147,7 @@ const signIn = () => {
           </span>
         </div>
       </div>
+    </div>
     </div>
   );
 };

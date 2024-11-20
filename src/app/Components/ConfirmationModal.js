@@ -7,7 +7,6 @@ export default function ConfirmationModal({handleApprove, handleReject}) {
   const router= useRouter();
   const [open, setOpen] = useState(true)
   const handleFormApprove = () => {
-    console.log("called")
     handleApprove();
     setOpen(false);
   }
