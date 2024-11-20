@@ -11,6 +11,8 @@ const dashboard = () => {
   const router = useRouter();
   const { setFetchedProducts } = useContext(ProductContext);
   const { fetchedProducts } = useContext(ProductContext);
+  const [searchedTerm, setSearchedTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const fetchAllProductsByUserID = async (userId) => {
     const response = await fetch("api/fetchAllProductsForUser", {
       method: "POST",
@@ -24,7 +26,7 @@ const dashboard = () => {
     const json = await response.json();
     if (response.status === 201) {
       setFetchedProducts(json.products);
-      setFetchedProducts(json.products);
+      setFilteredProducts(json.products);
     } else {
       console.log(json.message);
     }
@@ -34,7 +36,24 @@ const dashboard = () => {
       prevProducts.filter((product) => product._id !== productId)
     );
   };
-
+  const handleSearchBar = (value) => {
+    console.log("search bar clicked");
+    setSearchedTerm(value);
+    titleGotSearched(value);
+  };
+  const titleGotSearched = (searchedTerm) => {
+    // console.log(searchedTerm);
+    if (searchedTerm !== "") {
+      const searchedProducts = fetchedProducts.filter((singleProduct) => {
+        return singleProduct.productName
+          .toLowerCase()
+          .includes(searchedTerm.toLowerCase())
+      });
+      setFilteredProducts(searchedProducts);
+    } else {
+      setFilteredProducts(fetchedProducts);
+    }
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
@@ -53,13 +72,25 @@ const dashboard = () => {
 
       {/* Bottom Section */}
       <div className="bg-gray-300 min-h-[60%] h-auto flex flex-col justify-center items-center ">
+        <div className="bg-white flex rounded-md h-[40px] items-center mr-3">
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="text-black text-xl mr-1 ml-3"
+          />
+          <input
+            type="text"
+            className="w-full border-none"
+            value={searchedTerm}
+            onChange={(e) => handleSearchBar(e.target.value)}
+          />
+        </div>
         <div
           className={`p-8 bg-transparent min-h-full w-[90%] rounded-lg  ${
-            fetchedProducts.length != 0 ? "grid grid-cols-4 gap-8" : "flex "
+            filteredProducts.length != 0 ? "grid grid-cols-4 gap-8" : "flex "
           } `}
         >
-          {fetchedProducts && fetchedProducts.length != 0 ? (
-            fetchedProducts?.map((singleProductData, key) => (
+          {filteredProducts && filteredProducts.length != 0 ? (
+            filteredProducts?.map((singleProductData, key) => (
               <ProductCard
                 singleProductData={singleProductData}
                 key={key}
