@@ -1,14 +1,16 @@
 "use client";
 import Navbar from "../Components/Navbar";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ProductCard from "../Components/ProductCard";
 import { jwtDecode } from "jwt-decode";
-import {faCirclePlus} from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
+import ProductContext from "@/context/ProductContext";
 const dashboard = () => {
-  const router= useRouter();
-  const [fetchedProducts, setFetchedProducts] = useState([]);
+  const router = useRouter();
+  const { setFetchedProducts } = useContext(ProductContext);
+  const { fetchedProducts } = useContext(ProductContext);
   const fetchAllProductsByUserID = async (userId) => {
     const response = await fetch("api/fetchAllProductsForUser", {
       method: "POST",
@@ -22,13 +24,17 @@ const dashboard = () => {
     const json = await response.json();
     if (response.status === 201) {
       setFetchedProducts(json.products);
+      setFetchedProducts(json.products);
     } else {
       console.log(json.message);
     }
   };
   const removeProduct = (productId) => {
-    setFetchedProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
+    setFetchedProducts((prevProducts) =>
+      prevProducts.filter((product) => product._id !== productId)
+    );
   };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const authToken = localStorage.getItem("authStorageToken");
@@ -37,7 +43,7 @@ const dashboard = () => {
         fetchAllProductsByUserID(storedData.userId);
       }
     }
-  }, []);
+  }, [fetchedProducts]);
   return (
     <div className="flex flex-col h-screen w-full max-w-screen mx-auto overflow-y-auto">
       {/* Top Section */}
@@ -46,7 +52,7 @@ const dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="bg-gray-300 min-h-[60%] h-auto flex justify-center items-center ">
+      <div className="bg-gray-300 min-h-[60%] h-auto flex flex-col justify-center items-center ">
         <div
           className={`p-8 bg-transparent min-h-full w-[90%] rounded-lg  ${
             fetchedProducts.length != 0 ? "grid grid-cols-4 gap-8" : "flex "
@@ -54,7 +60,11 @@ const dashboard = () => {
         >
           {fetchedProducts && fetchedProducts.length != 0 ? (
             fetchedProducts?.map((singleProductData, key) => (
-              <ProductCard singleProductData={singleProductData} key={key} onDelete={removeProduct} />
+              <ProductCard
+                singleProductData={singleProductData}
+                key={key}
+                onDelete={removeProduct}
+              />
             ))
           ) : (
             <div
