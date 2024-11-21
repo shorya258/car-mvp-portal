@@ -7,12 +7,15 @@ import { faCirclePlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import ProductContext from "@/context/ProductContext";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const dashboard = () => {
   const router = useRouter();
   const { setFetchedProducts } = useContext(ProductContext);
   const { fetchedProducts } = useContext(ProductContext);
   const [searchedTerm, setSearchedTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const[userId, setUserId]= useState("")
   const fetchAllProductsByUserID = async (userId) => {
     const response = await fetch("api/fetchAllProductsForUser", {
       method: "POST",
@@ -27,14 +30,18 @@ const dashboard = () => {
     if (response.status === 201) {
       setFetchedProducts(json.products);
       setFilteredProducts(json.products);
-    } else {
+    } 
+    else if(response.status === 200){
+      setFetchedProducts([])
+      setFilteredProducts([])
+    }
+    else {
       console.log(json.message);
     }
   };
-  const removeProduct = (productId) => {
-    setFetchedProducts((prevProducts) =>
-      prevProducts.filter((product) => product._id !== productId)
-    );
+  const removeProduct = () => {
+    fetchAllProductsByUserID(userId)
+    toast.error("Removed successfully")
   };
   const handleSearchBar = (value) => {
     console.log("search bar clicked");
@@ -59,14 +66,16 @@ const dashboard = () => {
       const authToken = localStorage.getItem("authStorageToken");
       if (authToken) {
         const storedData = jwtDecode(authToken);
+        setUserId(storedData.userId)
         fetchAllProductsByUserID(storedData.userId);
       }
     }
-  }, [fetchedProducts]);
+  }, []);
   return (
-    <div className="flex flex-col h-screen w-full max-w-screen mx-auto overflow-y-auto">
+    <div className="flex flex-col min-h-screen h-auto w-full max-w-screen mx-auto overflow-y-auto">
+        <ToastContainer/>
       {/* Top Section */}
-      <div className="bg-customBG h-[40%] bg-cover bg-no-repeat bg-bottom flex-shrink-0">
+      <div className="bg-customBG h-[300px] bg-cover bg-no-repeat bg-bottom flex-shrink-0">
         <Navbar />
       </div>
 
@@ -85,7 +94,7 @@ const dashboard = () => {
           />
         </div>
         <div
-          className={`p-8 bg-transparent min-h-full w-[90%] rounded-lg  ${
+          className={`p-8 bg-transparent w-[90%] rounded-lg  ${
             filteredProducts.length != 0 ? "grid grid-cols-4 gap-8" : "flex "
           } `}
         >
@@ -99,7 +108,7 @@ const dashboard = () => {
             ))
           ) : (
             <div
-              className="text-gray-500 w-full flex flex-col gap-2 bg-white rounded-md justify-center items-center border-dashed border-gray-600 border-2 hover:scale-105 transition-transform duration-300 ease-in-out cursor-default"
+              className="text-gray-500 w-full h-[500px] flex flex-col gap-2 bg-white rounded-md justify-center items-center border-dashed border-gray-600 border-2 hover:scale-105 transition-transform duration-300 ease-in-out cursor-default"
               onClick={() => router.push(`/cars-form`)}
             >
               <FontAwesomeIcon icon={faCirclePlus} className="text-3xl" />

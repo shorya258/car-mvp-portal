@@ -20,10 +20,10 @@ export async function POST(req) {
     if (productsByUserId.length===0) {
       return NextResponse.json(
         {
-          success: false,
-          message: "User has not added any products.",
+          success: true,
+          message: "User has not added any products."
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
     return NextResponse.json(

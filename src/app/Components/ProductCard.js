@@ -42,14 +42,13 @@ const ProductCard = ({ singleProductData, onDelete }) => {
     const json = await response.json();
     if (response.status === 201) {
       onDelete(_id);
-      toast.success(json.message);
+      // toast.success(json.message);
     } else {
-      toast.error(json.message);
+      console.log(json.message);
     }
   };
   return (
     <div className="mx-auto rounded overflow-hidden shadow-lg bg-white cursor-default">
-      <ToastContainer/>
       <div onClick={navigateToProductDescriptionPage}>
         <Image
           className="w-full"
